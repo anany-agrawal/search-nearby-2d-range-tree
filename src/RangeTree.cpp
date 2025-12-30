@@ -1,42 +1,61 @@
 #include "RangeTree.h"
-#include <iostream>
+#include <algorithm>
 
-RangeTree::RangeTree(const std::vector<Point>& points) {
-    root = build(points);
-}
+using namespace std;
 
-RangeTree::Node* RangeTree::build(std::vector<Point> pts) {
-    if (pts.empty()) return nullptr;
+RangeTree::Node* RangeTree::build(vector<Point>& points) {
+    if (points.empty()) return nullptr;
 
-    std::sort(pts.begin(), pts.end(), [](const Point &a, const Point &b) {
-        return a.x < b.x;
-    });
+    int mid = points.size() / 2;
+    Node* node = new Node(points[mid]);
 
-    int mid = pts.size() / 2;
-    Node* node = new Node(pts[mid]);
-    node->y_sorted = pts;
+    vector<Point> left(points.begin(), points.begin() + mid);
+    vector<Point> right(points.begin() + mid + 1, points.end());
 
-    std::vector<Point> left_pts(pts.begin(), pts.begin() + mid);
-    std::vector<Point> right_pts(pts.begin() + mid + 1, pts.end());
+    node->left = build(left);
+    node->right = build(right);
 
-    node->left = build(left_pts);
-    node->right = build(right_pts);
+    node->y_sorted = points;
+    sort(node->y_sorted.begin(), node->y_sorted.end(),
+         [](const Point& a, const Point& b) {
+             return a.y < b.y;
+         });
 
     return node;
 }
 
-std::vector<Point> RangeTree::rangeQuery(int x1, int x2, int y1, int y2) {
-    std::vector<Point> result;
-    query(root, x1, x2, y1, y2, result);
-    return result;
+RangeTree::RangeTree(const vector<Point>& points) {
+    vector<Point> pts = points;
+    sort(pts.begin(), pts.end(),
+         [](const Point& a, const Point& b) {
+             return a.x < b.x;
+         });
+    root = build(pts);
 }
 
-void RangeTree::query(Node* node, int x1, int x2, int y1, int y2, std::vector<Point>& result) {
+void RangeTree::rangeQuery(Node* node,
+                           int x1, int x2,
+                           int y1, int y2,
+                           vector<Point>& result) const {
     if (!node) return;
 
-    if (x1 <= node->p.x && node->p.x <= x2 && y1 <= node->p.y && node->p.y <= y2)
-        result.push_back(node->p);
+    if (x1 <= node->point.x && node->point.x <= x2) {
+        if (y1 <= node->point.y && node->point.y <= y2)
+            result.push_back(node->point);
 
-    if (node->p.x > x1) query(node->left, x1, x2, y1, y2, result);
-    if (node->p.x < x2) query(node->right, x1, x2, y1, y2, result);
+        rangeQuery(node->left, x1, x2, y1, y2, result);
+        rangeQuery(node->right, x1, x2, y1, y2, result);
+    }
+    else if (node->point.x < x1) {
+        rangeQuery(node->right, x1, x2, y1, y2, result);
+    }
+    else {
+        rangeQuery(node->left, x1, x2, y1, y2, result);
+    }
+}
+
+vector<Point> RangeTree::rangeQuery(int x1, int x2, int y1, int y2) const {
+    vector<Point> result;
+    rangeQuery(root, x1, x2, y1, y2, result);
+    return result;
 }

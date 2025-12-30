@@ -1,28 +1,31 @@
-#pragma once
-#include <vector>
-#include <algorithm>
+#ifndef RANGE_TREE_H
+#define RANGE_TREE_H
 
-struct Point {
-    int x, y;
-    Point(int _x=0, int _y=0) : x(_x), y(_y) {}
-};
+#include <vector>
+#include "Point.h"
 
 class RangeTree {
-public:
+private:
     struct Node {
-        Point p;
+        Point point;                    // split point
         Node* left;
         Node* right;
-        std::vector<Point> y_sorted; // linked list sorted by y
-        Node(Point point) : p(point), left(nullptr), right(nullptr) {}
+        std::vector<Point> y_sorted;    // points sorted by y
+
+        Node(const Point& p) : point(p), left(nullptr), right(nullptr) {}
     };
 
     Node* root;
 
-    RangeTree(const std::vector<Point>& points);
-    std::vector<Point> rangeQuery(int x1, int x2, int y1, int y2);
+    Node* build(std::vector<Point>& points);
+    void rangeQuery(Node* node,
+                    int x1, int x2,
+                    int y1, int y2,
+                    std::vector<Point>& result) const;
 
-private:
-    Node* build(std::vector<Point> pts);
-    void query(Node* node, int x1, int x2, int y1, int y2, std::vector<Point>& result);
+public:
+    RangeTree(const std::vector<Point>& points);
+    std::vector<Point> rangeQuery(int x1, int x2, int y1, int y2) const;
 };
+
+#endif
