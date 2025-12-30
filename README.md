@@ -66,26 +66,6 @@ make
 # Run the example
 ./search_nearby
 ```
-
-Usage Example
-#include <iostream>
-#include "RangeTree.h"
-
-int main() {
-    std::vector<Point> points = {
-        {1,6}, {2,4}, {3,7}, {4,9}, {5,1}, {6,3}, {7,8}, {8,10}, {9,2}, {10,5}
-    };
-
-    RangeTree tree(points);
-
-    int qx = 5, qy = 5, d = 3; // search distance
-    std::cout << "Nearby points:\n";
-    auto nearby = tree.rangeQuery(qx - d, qx + d, qy - d, qy + d);
-    for (auto &p : nearby)
-        std::cout << "(" << p.x << ", " << p.y << ")\n";
-
-    return 0;
-}
 Sample Output:
 Nearby points:
 (2, 4)
@@ -93,14 +73,5 @@ Nearby points:
 (5, 1)
 (6, 3)
 (7, 8)
-Notes
+Note:
 Points are represented as struct Point { int x, y; };
-
-RangeTree handles construction and queries
-
-Can be extended for k-nearest neighbor search or dynamic updates
-
-References
-2D Range Tree - GeeksforGeeks
-
-C++ STL Documentation
