@@ -1,8 +1,7 @@
 # Search Nearby - 2D Range Tree
 
 **Author:** Anany Agrawal  
-**Language:** C++  
-**License:** MIT  
+**Language:** C++
 
 ## Overview
 
@@ -37,10 +36,6 @@ search-nearby-2d-range-tree/
 │ └── RangeTree.cpp # RangeTree implementation
 ├── build/ # Build directory (generated)
 └── tests/ # Optional: unit tests
-
-yaml
-Copy code
-
 ---
 
 ## Installation & Build
@@ -70,9 +65,9 @@ make
 
 # Run the example
 ./search_nearby
+```
+
 Usage Example
-cpp
-Copy code
 #include <iostream>
 #include "RangeTree.h"
 
@@ -92,9 +87,6 @@ int main() {
     return 0;
 }
 Sample Output:
-
-yaml
-Copy code
 Nearby points:
 (2, 4)
 (3, 7)
